@@ -2,29 +2,31 @@
 #include <nRF24L01.h>             
 #include <RF24.h>            
 
-const uint64_t pipeIn = 0xE8E8F0F0E1LL; 
-const uint64_t pipeOut = 0xF8E8F0F0E1LL;
-
-RF24 radio(9, 10); 
+const uint64_t pipeOut = 0xE8E8F0F0E2LL;
+const uint64_t pipeIn = 0xE8E8F0F0E1LL;
+const byte addresses[][6] = {"00001", "00002"};
+RF24 radio(9, 10); // select  CSN and CE  pins
 struct MyData {
-  int boton_1;
-  int boton_2;
-  const int apagar = 0;
+  int apagarLamparas;  
+  int alertaEnfermera ; 
 };
-MyData data;
+int boton = 5;
 int LED = 3;
-int led_boton_1 = 5;
+int alertaEnfermera = 1;
+MyData data;
 
 void setup()
-{ 
-  Serial.begin(9600);
-  pinMode(led_boton_1, INPUT_PULLUP); //LED CULERO PANTALLA PUESTO DE ENFERMERIA 
-  pinMode(LED,OUTPUT);   
+{  
+  pinMode(LED,OUTPUT);
+  pinMode(boton,INPUT_PULLUP);
+  digitalWrite(LED, LOW);
+
+  Serial.begin(9600); 
   radio.begin();
   radio.setAutoAck(false);
   radio.setDataRate(RF24_250KBPS);  
-  radio.openWritingPipe(pipeOut);
   radio.openReadingPipe(1,pipeIn);
+  radio.openWritingPipe(pipeOut);
   radio.startListening();
 }
 
@@ -32,11 +34,14 @@ void setup()
 unsigned long lastRecvTime = 0;
 void recvData()
 {
-  while ( radio.available() )
+  while ( radio.available() ) 
   {
     radio.read(&data, sizeof(MyData));
-    lastRecvTime = millis(); 
-  
+    lastRecvTime = millis(); //here we receive the data
+    if(data.apagarLamparas == 0 && digitalRead(LED) == HIGH){
+    Serial.print("Estado de lampara: "); Serial.println(data.apagarLamparas);  
+    digitalWrite(LED,data.apagarLamparas);
+    }    
   }
 }
 /**************************************************************/
@@ -44,8 +49,17 @@ void recvData()
 void loop()
 {
 recvData();
-if(digitalRead(led_boton_1) == LOW){
-   radio.write(&data, sizeof(MyData));
-  }  
+
+if(digitalRead(boton) == LOW){
+    radio.stopListening();
+    //delay(100);
+    data.alertaEnfermera = alertaEnfermera;
+    digitalWrite(LED, HIGH);
+    radio.write(&data, sizeof(MyData));
+    Serial.print("Boton presionado:  "); Serial.println(data.alertaEnfermera);
+    delay(100);
+    radio.startListening();
+}
+
 
 }
