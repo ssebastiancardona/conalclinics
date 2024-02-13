@@ -5,12 +5,12 @@
 const uint64_t pipeOut = 0xE8E8F0F0E2LL;
 const uint64_t pipeIn = 0xE8E8F0F0E1LL;
 const byte addresses[][6] = {"00001", "00002"};
-RF24 radio(9, 10); // select  CSN and CE  pins
+RF24 radio(7, 5); // select  CSN and CE  pins // 9 y 10 en nano
 struct MyData {
   int apagarLamparas;  
   int alertaEnfermera ; 
 };
-int boton = 5;
+int boton = 2;
 int LED = 3;
 int alertaEnfermera = 1;
 MyData data;
