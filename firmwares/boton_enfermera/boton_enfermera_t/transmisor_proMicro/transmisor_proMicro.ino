@@ -5,16 +5,14 @@
 const uint64_t pipeOut = 0xE8E8F0F0E1LL; 
 const uint64_t pipeIn = 0xE8E8F0F0E2LL;
 const byte addresses[][6] = {"00001", "00002"};
-RF24 radio(9, 10); // select  CSN and CE  pins
-
-int boton = 5;
-int ledBoton_1 = 3;
-int apagarLamparas = 0;
-
+RF24 radio(7, 5); // select  CSN and CE  pins
 struct MyData {
   int apagarLamparas;
   int alertaEnfermera;  
 };
+int boton = 2;
+int LED = 3;
+int apagarLamparas = 0;
 MyData data;
 
 
@@ -23,9 +21,9 @@ void setup()
   //Start everything up
   Serial.begin(9600);
   pinMode(boton, INPUT);
-  pinMode(ledBoton_1, OUTPUT);
+  pinMode(LED, OUTPUT);
   digitalWrite(boton, HIGH);
-  digitalWrite(ledBoton_1, HIGH);
+  digitalWrite(LED, HIGH);
 
   radio.begin();
   radio.setAutoAck(false);
@@ -48,7 +46,7 @@ void recvData()
     lastRecvTime = millis(); //here we receive the data
     if(data.alertaEnfermera == 1){
     Serial.print("Estado de lampara: "); Serial.println(data.alertaEnfermera);  
-    digitalWrite(ledBoton_1, HIGH);
+    digitalWrite(LED, HIGH);
     }    
   }
 }
@@ -62,7 +60,7 @@ void loop()
     radio.stopListening();
     //delay(100);
     apagarLamparas = apagarLamparas;
-    digitalWrite(ledBoton_1, LOW);
+    digitalWrite(LED, LOW);
     radio.write(&data, sizeof(MyData));
     Serial.print("Boton presionado: "); Serial.println(data.apagarLamparas);
     //delay(100);

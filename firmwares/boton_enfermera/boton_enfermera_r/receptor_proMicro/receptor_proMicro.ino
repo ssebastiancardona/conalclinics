@@ -8,7 +8,7 @@ const byte addresses[][6] = {"00001", "00002"};
 RF24 radio(7, 5); // select  CSN and CE  pins // 9 y 10 en nano
 struct MyData {
   int apagarLamparas;  
-  int alertaEnfermera ; 
+  int alertaEnfermera; 
 };
 int boton = 2;
 int LED = 3;
