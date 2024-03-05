@@ -9,7 +9,7 @@ void setup()
     Serial.begin(9600);
 
     // Begin serial communication with Arduino and SIM800L
-    mySerial.begin(9600);
+    mySerial.begin(115200);
 
     Serial.println("Initializing...");
     delay(1000);
