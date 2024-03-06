@@ -1,7 +1,7 @@
 #include <SoftwareSerial.h>
 
 // Create software serial object to communicate with SIM800L
-SoftwareSerial mySerial(16, 17); // SIM800L RX & TX is connected to Arduino #2 & #3
+SoftwareSerial mySerial(0, 4); // SIM800L RX & TX is connected to Arduino #2 & #3
 
 void setup()
 {
@@ -9,7 +9,7 @@ void setup()
     Serial.begin(9600);
 
     // Begin serial communication with Arduino and SIM800L
-    mySerial.begin(115200);
+    mySerial.begin(9600);
 
     Serial.println("Initializing...");
     delay(1000);
